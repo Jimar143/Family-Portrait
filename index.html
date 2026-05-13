@@ -188,8 +188,8 @@
             
             <!-- Piece 1: Original -->
             <div class="art-card reveal">
-                <div class="img-container cursor-pointer" onclick="openLightbox('Original.jpg', 'Legacy Reference', 'Original Source Image')">
-                    <img src="Original.jpg" alt="" onerror="this.src='https://placehold.co/800x1000/1a1a1a/c5a059?text=Original.jpg'">
+                <div class="img-container cursor-pointer" onclick="openLightbox('Original.jpg', 'Reference Portrait', 'Original Source Image')">
+                    <img src="Original.jpg" alt="Original Reference" onerror="this.src='https://placehold.co/800x1000/1a1a1a/c5a059?text=Original.jpg'">
                 </div>
                 <div class="p-6">
                     <h3 class="serif text-2xl text-[var(--text-primary)] mb-1">Reference Portrait</h3>
@@ -199,8 +199,8 @@
 
             <!-- Piece 2: Chibi -->
             <div class="art-card reveal">
-                <div class="img-container cursor-pointer" onclick="openLightbox('chibi.jpeg', 'Whimsical Chibi', 'Digital Character Illustration')">
-                    <img src="chibi.jpeg" alt="" onerror="this.src='https://placehold.co/800x1000/1a1a1a/c5a059?text=chibi.jpeg'">
+                <div class="img-container cursor-pointer" onclick="openLightbox('chibi.jpeg', 'Stylized Chibi', 'Digital Character Illustration')">
+                    <img src="chibi.jpeg" alt="Chibi Illustration" onerror="this.src='https://placehold.co/800x1000/1a1a1a/c5a059?text=chibi.jpeg'">
                 </div>
                 <div class="p-6">
                     <h3 class="serif text-2xl text-[var(--text-primary)] mb-1">Stylized Chibi</h3>
@@ -211,7 +211,7 @@
             <!-- Piece 3: Charcoal -->
             <div class="art-card reveal">
                 <div class="img-container cursor-pointer" onclick="openLightbox('charcoal1.jpg', 'Charcoal Depth', 'Hand-drawn Tonal Study')">
-                    <img src="charcoal1.jpg" alt="" onerror="this.src='https://placehold.co/800x1000/1a1a1a/c5a059?text=charcoal.jpeg'" class="grayscale contrast-125">
+                    <img src="charcoal1.jpg" alt="Charcoal Sketch" onerror="this.src='https://placehold.co/800x1000/1a1a1a/c5a059?text=charcoal.jpeg'" class="grayscale contrast-125">
                 </div>
                 <div class="p-6">
                     <h3 class="serif text-2xl text-[var(--text-primary)] mb-1">Charcoal Sketch</h3>
@@ -310,7 +310,8 @@
                 <p id="lb-desc" class="text-amber-500 text-[10px] tracking-[0.3em] uppercase mt-2"></p>
                 
                 <div class="mt-8 flex justify-center">
-                    <button class="text-[10px] tracking-widest uppercase bg-white text-black px-8 py-4 font-bold hover:bg-amber-500 transition-colors shadow-lg flex items-center">
+                    <!-- Updated Download Button to call the JS function -->
+                    <button onclick="downloadCurrentImage()" class="text-[10px] tracking-widest uppercase bg-white text-black px-8 py-4 font-bold hover:bg-amber-500 transition-colors shadow-lg flex items-center">
                         <i class="fas fa-download mr-2"></i> Download Full Resolution
                     </button>
                 </div>
@@ -354,7 +355,13 @@
         const lbTitle = document.getElementById('lb-title');
         const lbDesc = document.getElementById('lb-desc');
 
+        // Global variable to keep track of the current image source
+        let currentImgSrc = '';
+        let currentImgTitle = '';
+
         function openLightbox(src, title, desc) {
+            currentImgSrc = src;
+            currentImgTitle = title;
             lbImg.src = src;
             lbTitle.innerText = title;
             lbDesc.innerText = desc;
@@ -365,6 +372,28 @@
         function closeLightbox() {
             lb.style.display = 'none';
             document.body.style.overflow = 'auto';
+        }
+
+        /**
+         * Function to handle the actual downloading of the file
+         */
+        function downloadCurrentImage() {
+            if (!currentImgSrc) return;
+
+            // Create a temporary anchor element
+            const link = document.createElement('a');
+            link.href = currentImgSrc;
+            
+            // Set the download filename based on the title or the original filename
+            const fileName = currentImgTitle.replace(/\s+/g, '_').toLowerCase() || 'artwork';
+            const extension = currentImgSrc.split('.').pop().split(/\#|\?/)[0] || 'jpg';
+            
+            link.download = `${fileName}.${extension}`;
+            
+            // Append to body, click, and remove
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Scroll Reveal Animation
